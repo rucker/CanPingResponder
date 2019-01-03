@@ -12,7 +12,7 @@ class PingResponderController(object):
         self.canAdapter.stop()
 
     def receive_message_callback(self, msg):
-        raise RuntimeError('receive_message_callback() not implemented')
+        self.send_message(msg.data)
 
     def send_message(self, data):
-        raise RuntimeError('send_message() not implemented')
+        self.canAdapter.send(101, data)
