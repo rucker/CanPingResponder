@@ -12,9 +12,10 @@ class PingResponderController(object):
         self.canAdapter.stop()
 
     def receive_message_callback(self, msg):
-        modified_data = msg.data[0:7]
-        modified_data.append((msg.data[7] + 1) % 256)
-        self.send_message(modified_data)
+        if msg.arbitration_id == 100:
+            modified_data = msg.data[0:7]
+            modified_data.append((msg.data[7] + 1) % 256)
+            self.send_message(modified_data)
 
     def send_message(self, data):
         self.canAdapter.send(101, data)
