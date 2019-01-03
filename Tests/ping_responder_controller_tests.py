@@ -23,7 +23,7 @@ class TestPingResponderControllerShould(unittest.TestCase):
         self._tester_can_adapter.stop()
 
     def test_detectPingAndSendResponse(self):
-        self._send_test_message(100)
+        self._send_test_message()
         self.assertEqual(self._received_message_id, 101)
         count = self._received_message_data[7]
         self.assertEqual(count, 124)
@@ -34,8 +34,13 @@ class TestPingResponderControllerShould(unittest.TestCase):
         count = self._received_message_data[7]
         self.assertEqual(count, 0)
 
-    def _send_test_message(self, message_id):
-        message_data = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 123])
+    def test_wrapByteValueToZeroAfterMaxValueExceeded(self):
+        self._send_test_message(100, bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 255]))
+        self.assertEqual(self._received_message_id, 101)
+        count = self._received_message_data[7]
+        self.assertEqual(count, 0)
+
+    def _send_test_message(self, message_id = 100, message_data = bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 123])):
         self._tester_can_adapter.send(message_id, message_data)
         time.sleep(0.1)
 
